@@ -1,0 +1,92 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+.form-label-field{
+  margin-left: 30px;
+}
+
+.from-field-wrap{
+  padding: 10px 30px 10px 0;
+}
+
+.tds-form-input{
+  text-indent: 30px;
+  min-width: 350px;
+  height: 40px;
+  border-radius: 30px;
+  border-style: none;
+  /* color: gray; */
+  background-color: #80808012;  
+}
+
+.tds-form-textarea-input{
+  text-indent: 30px;
+  min-width: 350px;
+  border-radius: 30px;
+  border-style: none;
+  /* color: gray; */
+  background-color: #80808012;  
+}
+
+.text-feedback{
+  color: #b74134;
+}
+
+.create-btn {
+  height: 50px;
+  width: 130px;
+  border-radius: 30px;
+  background-color: black;
+  color: white;
+  cursor: pointer;
+  min-width: 206px;
+}
+
+.align-horizontally {
+  display: flex;
+}
+
+.form-offer {
+  margin: 100px 0px 0px 30px;
+}
+
+.align-vertically{
+  display: block;
+}
