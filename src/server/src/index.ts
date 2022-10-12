@@ -22,32 +22,22 @@ async function runServer() {
         const { companyName, email, adress, description, availabilityDate, expirationDate } = offer;
 
         if (!companyName) {
-            console.log(' passe here 1');
             return res.status(304).json({ ok: false, level: 'error', status: 304, message: "Unprocessable Entity :companyName is required " });
         }
         if (!validator.isAlphanumeric(companyName)) {
-            console.log(' passe here 2');
             return res.status(304).json({ ok: false, level: 'error', status: 304, message: "Unprocessable Entity :incorrect companyName " });
         }
         if (!email) {
-            console.log(' passe here 3');
             return res.status(304).json({ ok: false, level: 'error', status: 304, message: "Unprocessable Entity :email is required " });
         }
         if (!validator.isEmail(email)) {
-            console.log(' passe here 4');
             return res.status(304).json({ ok: false, level: 'error', status: 304, message: "Unprocessable Entity :incorrect email " });
         }
         if (!adress) {
-            console.log(' passe here 5');
             return res.status(304).json({ ok: false, level: 'error', status: 304, message: "Unprocessable Entity :adress is required " });
         }
         if (!description) {
-            console.log(' passe here 7');
             return res.status(304).json({ ok: false, level: 'error', status: 304, message: "Unprocessable Entity :description is required " });
-        }
-        if (!validator.isAlphanumeric(description)) {
-            console.log(' passe here 8');
-            return res.status(304).json({ ok: false, level: 'error', status: 304, message: "Unprocessable Entity :incorrect description " });
         }
         offer.availabilityDate = new Date(availabilityDate);
         offer.expirationDate = new Date(expirationDate);
