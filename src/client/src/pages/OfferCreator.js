@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Formik, Form/*, ErrorMessage, Field*/ } from 'formik';
 import * as Yup from 'yup';
 import Stack from '@mui/material/Stack';
@@ -10,6 +10,7 @@ import { isValidDate } from '../lib/moment.js';
 import { UTCToday, dateFormat } from '../lib/date-helpers';
 import "moment/locale/fr"
 import FormikTextInput from '../components/FormikTextInput.js';
+import AlertNotification from '../components/AlertNotification.js';
 
 function OfferCreator() {
 
@@ -38,6 +39,16 @@ function OfferCreator() {
                 }
             ).typeError(invalidDateMsg)
     });
+    const initAlertNotificationInfos = { ok: false };
+    const [alertNotificationInfos, setAlertNotificationInfos] = useState(initAlertNotificationInfos);
+
+    const handleCloseAlerNotification = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setAlertNotificationInfos(initAlertNotificationInfos);
+    };
+
     const createOffer = async (values) => {
         // Create offer
         const addOfferRes = await fetch('/offers/add-offer', {
@@ -49,7 +60,11 @@ function OfferCreator() {
             },
         });
         const response = await addOfferRes.json();
-        console.log(' Add offer response=' + JSON.stringify(response));
+        if (response.ok) {
+            setAlertNotificationInfos({ ok: true, message: "L'offre est crée avec succès ", severity: "success" });
+        } else {
+            setAlertNotificationInfos({ ok: true, message: "Erreur lors de la création d'offre ", severity: "error" });
+        }
     };
 
     // "DD/MM/YYYY"  //  label={formikFieldLabel}              <ErrorMessage name={formikFieldName} className='form-label-field text-feedback' component="span" />
@@ -80,10 +95,11 @@ function OfferCreator() {
 
     return (
         <div>
+
+            {alertNotificationInfos.ok ? <AlertNotification severity={alertNotificationInfos.severity} open={true} message={alertNotificationInfos.message} handleClose={handleCloseAlerNotification} /> : null}
             <Formik initialValues={initialValues} onSubmit={createOffer} validationSchema={validationSchema} >
                 {
                     (formik) => (
-
                         <Form className='form-offer'>
                             <h1> Créer une annonce </h1>
                             <div className='align-horizontally '>

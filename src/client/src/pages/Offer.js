@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { Formik, Form/*, ErrorMessage, Field*/ } from 'formik';
 import * as Yup from 'yup';
 import FormikTextInput from '../components/FormikTextInput';
+import AlertNotification from '../components/AlertNotification.js';
 
 function Offer() {
 
@@ -11,6 +12,16 @@ function Offer() {
     // fetch offerId in data base if not existe return null 
 
     let [isOfferExist, setIsOfferExist] = useState(false);
+
+    const initAlertNotificationInfos = { ok: false };
+    const [alertNotificationInfos, setAlertNotificationInfos] = useState(initAlertNotificationInfos);
+
+    const handleCloseAlerNotification = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setAlertNotificationInfos(initAlertNotificationInfos);
+    };
 
     const fetchOffer = async (offerId) => {
         const res = await fetch(`/offers/${offerId}`);
@@ -51,13 +62,20 @@ function Offer() {
             },
         });
         const response = await addOfferRes.json();
+        return response;
     };
 
     const onContactOfferFormSubmit = async (values) => {
         const puttingInTouchRes = await puttingInTouch({ ...values, offerId });
+        if (puttingInTouchRes.ok) {
+            setAlertNotificationInfos({ ok: true, message: "Le mail est envoyé avec succès ", severity: "success" });
+        } else {
+            setAlertNotificationInfos({ ok: true, message: "Erreur lors de la mise en contact ", severity: "error" });
+        }
     };
 
     return <div>
+        {alertNotificationInfos.ok ? <AlertNotification severity={alertNotificationInfos.severity} open={true} message={alertNotificationInfos.message} handleClose={handleCloseAlerNotification} /> : null}
         {!isOfferExist ? null :
             <Formik initialValues={initialValues} onSubmit={onContactOfferFormSubmit} validationSchema={validationSchema} >
                 {
@@ -71,7 +89,7 @@ function Offer() {
                             </div>
                             <FormikTextInput fieldClassName="tds-form-textarea-input" labelName="Message" type="text" id="message" name="message" component="textarea" rows={10} />
                             <div className='from-field-wrap'>
-                            <button disabled={!formik.isValid} className={!formik.isValid ? 'btn-disabled':'btn'}  >Mise en contact</button>
+                                <button disabled={!formik.isValid} className={!formik.isValid ? 'btn-disabled' : 'btn'}  >Mise en contact</button>
                             </div>
                         </Form>
                     )
