@@ -23,7 +23,6 @@ export function sendgridService(apiKey: string) {
                 subject: subject ? subject : '',
                 html: html ? html : ''
             };
-            console.log(' Mail  '+JSON.stringify(msg));
             await MailService.send(msg);
         }
         catch (err) {
