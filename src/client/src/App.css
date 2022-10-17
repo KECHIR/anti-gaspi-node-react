@@ -83,7 +83,13 @@
   color: white;
   cursor: pointer;
   min-width: 206px;
+}
 
+.btn-disabled {
+  height: 50px;
+  width: 130px;
+  border-radius: 30px;
+  min-width: 206px;
 }
 
 .btn:hover {
