@@ -58,14 +58,14 @@ async function runServer() {
         const offerData: OfferT = offer;
         // Will create offer in mongo db
         const addOfferRes = await mongoDbCrud.insertOne('offers', { data: offerData });
-        // Will sending mail 
+        // Will sending mail
         if (addOfferRes.acknowledged) {
             const linksInfos = <LinksT>{ validationUrl: origin + req.headers.host + "/offers/validation/" + addOfferRes.insertedId.toString() }
             const offerMail = createOffersController().buildOfferMail(offerData, linksInfos);
             await MailService.sendMail(offerMail);
         }
         //Will return response
-        return res.status(200).json({ ...addOfferRes, status: 200, message: "Offer successfully added!" });
+        return res.status(200).json({ ...addOfferRes, ok: true, status: 200, message: "Offer successfully added!" });
     });
 
     app.get('/offers', async (req: Request, res: Response) => {
