@@ -4,22 +4,40 @@ import * as Yup from 'yup';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { isValidDate } from '../lib/moment.js';
+import { UTCToday, dateFormat } from '../lib/date-helpers';
+import "moment/locale/fr"
 import FormikTextInput from '../components/FormikTextInput.js';
 
 function OfferCreator() {
 
+    const dateNow = UTCToday();
+
+    const invalidDateMsg = "La date n'est pas valide";
+
     const initialValues = {
-        companyName: "", email: "", adress: "", description: "", availabilityDate: "", expirationDate: ""
+        companyName: "", email: "", adress: "", description: "", availabilityDate: dateNow, expirationDate: dateNow
     };
+
     const validationSchema = Yup.object().shape({
         companyName: Yup.string().required("Le nom de la société est obligatoire"),
         email: Yup.string().required("L'adresse e-mail est obligatoire ").email('Veuillez entrer une adresse e-mail valide'),
         adress: Yup.string().required("L'adresse de la société est obligatoire"),
-        description: Yup.string().required("La déscription du matériel est obligatoire")
+        description: Yup.string().required("La déscription du matériel est obligatoire"),
+        availabilityDate: Yup.date().min(dateNow, 'Veuillez choisir une date future').typeError(invalidDateMsg),
+        expirationDate: Yup
+            .date().required('La date expiration est obligatoire')
+            .when(
+                "availabilityDate",
+                (availabilityDate, schema) => {
+                    if (availabilityDate && isValidDate(availabilityDate)) {
+                        return schema.min(availabilityDate, "La date d’expiration doit être supérieure à la date de disponibilité")
+                    }
+                }
+            ).typeError(invalidDateMsg)
     });
-
     const createOffer = async (values) => {
         // Create offer
         const addOfferRes = await fetch('/offers/add-offer', {
@@ -43,9 +61,10 @@ function OfferCreator() {
                 </label>
             </div>
             <div>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="fr" >
                     <Stack spacing={spacing}>
                         <DesktopDatePicker
+                            disablePast={true}
                             name={formikFieldName}
                             inputFormat={dateFormat}
                             value={formik.values[formikFieldName]}
@@ -55,7 +74,7 @@ function OfferCreator() {
                     </Stack>
                 </LocalizationProvider>
             </div>
-            {formik.errors[formikFieldName] ? <span className='form-label-field text-feedback'> </span> : null}
+            {formik.errors[formikFieldName] ? <span className='form-label-field text-feedback'> {formik.errors[formikFieldName]} </span> : null}
         </div>
     }
 
@@ -64,6 +83,7 @@ function OfferCreator() {
             <Formik initialValues={initialValues} onSubmit={createOffer} validationSchema={validationSchema} >
                 {
                     (formik) => (
+
                         <Form className='form-offer'>
                             <h1> Créer une annonce </h1>
                             <div className='align-horizontally '>
@@ -74,12 +94,12 @@ function OfferCreator() {
                             <div className='align-horizontally '>
                                 <FormikTextInput fieldClassName="tds-form-textarea-input" labelName="Matériel/description*" type="text" id="description" name="description" component="textarea" rows={10} />
                                 <div className='align-vertically'>
-                                    <FormikDateInput formik={formik} formikFieldName="availabilityDate" formikFieldLabel="Dispo à partir de*" dateFormat="DD/MM/YYYY" spacing={3} />
-                                    <FormikDateInput formik={formik} formikFieldName="expirationDate" formikFieldLabel="Expriration le*" dateFormat="DD/MM/YYYY" spacing={3} />
+                                    <FormikDateInput formik={formik} formikFieldName="availabilityDate" formikFieldLabel="Dispo à partir de*" dateFormat={dateFormat} spacing={3} />
+                                    <FormikDateInput formik={formik} formikFieldName="expirationDate" formikFieldLabel="Expiration le*" dateFormat={dateFormat} spacing={3} />
                                 </div>
                             </div>
                             <div className='from-field-wrap'>
-                                <button disabled={!formik.isValid} className='btn' >Créer l'annonce</button>
+                                <button disabled={!formik.isValid} className={!formik.isValid ? 'btn-disabled' : 'btn'}  >Créer l'annonce</button>
                             </div>
                         </Form>
                     )
