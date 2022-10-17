@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+
 import { Formik, Form/*, ErrorMessage, Field*/ } from 'formik';
 import * as Yup from 'yup';
 import FormikTextInput from '../components/FormikTextInput';
@@ -70,7 +71,7 @@ function Offer() {
                             </div>
                             <FormikTextInput fieldClassName="tds-form-textarea-input" labelName="Message" type="text" id="message" name="message" component="textarea" rows={10} />
                             <div className='from-field-wrap'>
-                                <button disabled={!formik.isValid} className='btn' >Mise en contact</button>
+                            <button disabled={!formik.isValid} className={!formik.isValid ? 'btn-disabled':'btn'}  >Mise en contact</button>
                             </div>
                         </Form>
                     )
