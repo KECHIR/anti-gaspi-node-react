@@ -9,7 +9,8 @@ export default function Header() {
     //Javascript split method to get the name of the path in array
     const splitLocation = pathname.split("/");
     const handleActiveLinkClassName = (linkName) => splitLocation[1] === linkName ? "app-header-nav-item active" : "app-header-nav-item";
-    return <div className="app-header">
+    return <header >
+        <div className="app-header">
         <div className="app-header-wrap">
             <div className="app-header-title">
                 <a href={"/"} className="app-header-title-link"><h2>Anti Gaspi</h2></a>
@@ -32,5 +33,7 @@ export default function Header() {
                 </div>
             </nav>
         </div>
-    </div>
+        </div>
+     
+    </header>
 }
