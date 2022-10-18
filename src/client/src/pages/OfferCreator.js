@@ -6,7 +6,7 @@ import TextField from '@mui/material/TextField';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import { isValidDate } from '../lib/moment.js';
+import { isValidDate, addDays } from '../lib/moment.js';
 import { UTCToday, dateFormat } from '../lib/date-helpers';
 import "moment/locale/fr"
 import FormikTextInput from '../components/FormikTextInput.js';
@@ -27,7 +27,7 @@ function OfferCreator() {
         email: Yup.string().required("L'adresse e-mail est obligatoire ").email('Veuillez entrer une adresse e-mail valide'),
         adress: Yup.string().required("L'adresse de la société est obligatoire"),
         description: Yup.string().required("La déscription du matériel est obligatoire"),
-        availabilityDate: Yup.date().min(dateNow, 'Veuillez choisir une date future').typeError(invalidDateMsg),
+        availabilityDate: Yup.date().min(addDays(dateNow, -1), 'Veuillez choisir une date future').typeError(invalidDateMsg),
         expirationDate: Yup
             .date().required('La date expiration est obligatoire')
             .when(
@@ -39,6 +39,9 @@ function OfferCreator() {
                 }
             ).typeError(invalidDateMsg)
     });
+
+    validationSchema.cast({ availabilityDate: dateNow, expirationDate: dateNow });
+
     const initAlertNotificationInfos = { ok: false };
     const [alertNotificationInfos, setAlertNotificationInfos] = useState(initAlertNotificationInfos);
 
@@ -76,7 +79,7 @@ function OfferCreator() {
                 </label>
             </div>
             <div>
-                <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="fr" >
+                <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="fr"  >
                     <Stack spacing={spacing}>
                         <DesktopDatePicker
                             disablePast={true}
