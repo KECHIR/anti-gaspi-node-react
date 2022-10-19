@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-
 import { Formik, Form/*, ErrorMessage, Field*/ } from 'formik';
 import * as Yup from 'yup';
 import FormikTextInput from '../components/FormikTextInput';
 import AlertNotification from '../components/AlertNotification.js';
+import { create as createOfferService } from '../services/offerService.js';
 
 function Offer() {
 
@@ -15,6 +15,7 @@ function Offer() {
 
     const initAlertNotificationInfos = { ok: false };
     const [alertNotificationInfos, setAlertNotificationInfos] = useState(initAlertNotificationInfos);
+    const offerService = createOfferService();
 
     const handleCloseAlerNotification = (event, reason) => {
         if (reason === 'clickaway') {
@@ -23,20 +24,15 @@ function Offer() {
         setAlertNotificationInfos(initAlertNotificationInfos);
     };
 
-    const fetchOffer = async (offerId) => {
-        const res = await fetch(`/offers/${offerId}`);
-        return await res.json() || {};
-    };
-
     useEffect(() => {
         (async () => {
-            const offerInfo = await fetchOffer(offerId);
+            const offerInfo = await offerService.fetchOffer(offerId);
             if (offerInfo.ok) {
                 setIsOfferExist(offerInfo.ok)
             }
         })();
 
-    }, [offerId]); // mais peut étre ça sera suprimée à la main en base ! danger
+    }, [offerId, offerService]); // mais peut étre ça sera suprimée à la main en base ! danger
 
     const initialValues = {
         email: "", phone: "", message: ""
@@ -51,22 +47,8 @@ function Offer() {
         message: Yup.string()
     });
 
-    // Mise en contact 
-    const puttingInTouch = async (offerContactValues) => {
-        const addOfferRes = await fetch('/offers/contact', {
-            method: 'POST',
-            body: JSON.stringify(offerContactValues),
-            headers: {
-                'Content-type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            },
-        });
-        const response = await addOfferRes.json();
-        return response;
-    };
-
     const onContactOfferFormSubmit = async (values) => {
-        const puttingInTouchRes = await puttingInTouch({ ...values, offerId });
+        const puttingInTouchRes = await offerService.puttingInTouch({ ...values, offerId });
         if (puttingInTouchRes.ok) {
             setAlertNotificationInfos({ ok: true, message: "Le mail est envoyé avec succès ", severity: "success" });
         } else {

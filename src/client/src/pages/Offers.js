@@ -1,23 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import OffersList from '../components/OfferList';
+import { create as createOfferService } from '../services/offerService.js';
 
 function Offers() {
-
     let [offersList, setOffersList] = useState([]);
 
-    const fetchOffersList = async () => {
-        const res = await fetch('/offers');
-        const { data } = await res.json() || {};
-        return data;
-    };
+    const offerService = createOfferService();
 
     useEffect(() => {
         (async () => {
-            const fetchedOffersList = await fetchOffersList();
+            const fetchedOffersList = await offerService.fetchOffersList();
             setOffersList(fetchedOffersList)
         })();
 
-    }, []);
+    }, [offerService]);
 
     return (
         <div>

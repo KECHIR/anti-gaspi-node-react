@@ -11,10 +11,13 @@ import { UTCToday, dateFormat } from '../lib/date-helpers';
 import "moment/locale/fr"
 import FormikTextInput from '../components/FormikTextInput.js';
 import AlertNotification from '../components/AlertNotification.js';
+import { create as createOfferService } from '../services/offerService.js';
 
 function OfferCreator() {
 
     const dateNow = UTCToday();
+
+    const offerService = createOfferService();
 
     const invalidDateMsg = "La date n'est pas valide";
 
@@ -54,15 +57,7 @@ function OfferCreator() {
 
     const createOffer = async (values) => {
         // Create offer
-        const addOfferRes = await fetch('/offers/add-offer', {
-            method: 'POST',
-            body: JSON.stringify(values),
-            headers: {
-                'Content-type': 'application/json',
-                'Access-Control-Allow-Origin': '*'
-            },
-        });
-        const response = await addOfferRes.json();
+        const response = await offerService.createOffer(values);
         if (response.ok) {
             setAlertNotificationInfos({ ok: true, message: "L'offre est crée avec succès ", severity: "success" });
         } else {
