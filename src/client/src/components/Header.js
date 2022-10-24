@@ -11,29 +11,28 @@ export default function Header() {
     const handleActiveLinkClassName = (linkName) => splitLocation[1] === linkName ? "app-header-nav-item active" : "app-header-nav-item";
     return <header >
         <div className="app-header">
-        <div className="app-header-wrap">
-            <div className="app-header-title">
-                <a href={"/"} className="app-header-title-link"><h2>Anti Gaspi</h2></a>
+            <div className="app-header-wrap">
+                <div className="app-header-title">
+                    <a href={"/"} className="app-header-title-link"><h2>Anti Gaspi</h2></a>
+                </div>
+                <nav className="app-header-nav">
+                    <div className={handleActiveLinkClassName('create-offer')}>
+                        <Link to={"/create-offer"} className="app-header-nav-item-link">
+                            <div className="app-header-nav-item-inside-link">Déclarer</div>
+                        </Link>
+                    </div>
+                    <div className={handleActiveLinkClassName('offers')}>
+                        <Link to={"/offers"} className="app-header-nav-item-link">
+                            <div className="app-header-nav-item-inside-link">Annonces</div>
+                        </Link>
+                    </div>
+                    <div className={handleActiveLinkClassName('about')}>
+                        <Link to={"/about"} className="app-header-nav-item-link">
+                            <div className="app-header-nav-item-inside-link">À propos</div>
+                        </Link>
+                    </div>
+                </nav>
             </div>
-            <nav className="app-header-nav">
-                <div className={handleActiveLinkClassName('create-offer')}>
-                    <Link to={"/create-offer"} className="app-header-nav-item-link">
-                        <div className="app-header-nav-item-inside-link">Déclarer</div>
-                    </Link>
-                </div>
-                <div className={handleActiveLinkClassName('offers')}>
-                    <Link to={"/offers"} className="app-header-nav-item-link">
-                        <div className="app-header-nav-item-inside-link">Annonces</div>
-                    </Link>
-                </div>
-                <div className={handleActiveLinkClassName('about')}>
-                    <Link to={"/about"} className="app-header-nav-item-link">
-                        <div className="app-header-nav-item-inside-link">À propos</div>
-                    </Link>
-                </div>
-            </nav>
         </div>
-        </div>
-     
-    </header>
+    </header>;
 }

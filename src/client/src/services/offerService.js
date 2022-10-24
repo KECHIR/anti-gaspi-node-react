@@ -1,4 +1,3 @@
-
 export function create() {
 
     const fetchOffersList = async () => {

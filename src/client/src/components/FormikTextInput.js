@@ -19,5 +19,5 @@ export default function FormikTextInput({ fieldClassName, labelName, type, id, n
             <Field {...formikFieldProps} />
         </div>
         <ErrorMessage name={name} className='form-label-field text-feedback' component="span" />
-    </div>
+    </div>;
 }
